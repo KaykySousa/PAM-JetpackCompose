@@ -28,6 +28,8 @@ import com.example.jetpackcompose.ui.theme.shapeScheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Função responsável por renderizar a lista de Conversas
         setContent {
             JetpackComposeTheme() {
                 Conversation(SampleData.conversationSample)
@@ -36,12 +38,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Responsável por definir o formato da mensagem que será passada como parâmetro para o componente MessageCard
 data class Message(val author: String, val body: String)
 
+// Criação de componente MessageCard
 @Composable
 fun MessageCard(msg: Message) {
+
+    // Função Row para manter os elementos em linha
     Row(modifier = Modifier.padding(all = 8.dp)) {
 
+        // Função responsável por renderizar uma imagem circular de 40 dp de diâmetro
         Image(
             painter = painterResource(R.drawable.profile_picture),
             contentDescription = "Contact profile picture",
@@ -51,33 +58,43 @@ fun MessageCard(msg: Message) {
                 .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
         )
 
+        // Função responsável por adicionar um espaçamentro entre a imagem e a coluna com o nome do usuário e as mensagens
         Spacer(modifier = Modifier
             .width(8.dp))
-        
+
+        // Variável para verificar se a mensagem está expandinda
         var isExpanded by remember {
             mutableStateOf(false)
         }
 
+        // Animação da cor da mensagem
         val surfaceColor by animateColorAsState(
             if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
         )
 
+        // Função responsável por manter o nome de usuário e as mensagens em coluna
         Column(modifier = Modifier.clickable { isExpanded = !isExpanded }) {
+
+            // Função de texto para nome de usuário
             Text(
                 text = msg.author,
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary
             )
 
+            // Função responsável por adicionar um espaçamentro entre o nome do usuário e as mensagens
             Spacer(modifier = Modifier
                 .height(4.dp))
 
+            // Função responsável pela mensagem
             Surface(
                 shape = MaterialTheme.shapeScheme.medium,
                 tonalElevation = 1.dp,
                 color = surfaceColor,
                 modifier = Modifier.animateContentSize().padding(1.dp)
             ) {
+
+                // Função de texto para mensagem
                 Text(
                     text = msg.body,
                     modifier = Modifier.padding(all = 4.dp),
@@ -89,9 +106,14 @@ fun MessageCard(msg: Message) {
     }
 }
 
+// Criação do componente Conversation, responsável por renderizar uma lista de MessageCard
 @Composable
 fun Conversation(messages: List<Message>) {
+
+    // Função por manter as mensagens em coluna
     LazyColumn {
+
+        // Função responsável por renderizar cada MessageCard
         messages.map {
             item {
                 MessageCard(it)
@@ -100,6 +122,8 @@ fun Conversation(messages: List<Message>) {
     }
 }
 
+
+// Função de preview do componente Conversation
 @Preview
 @Composable
 fun PreviewConversation() {
@@ -108,6 +132,7 @@ fun PreviewConversation() {
     }
 }
 
+// Função de preview do componente MessageCard em light mode e dark mode
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
